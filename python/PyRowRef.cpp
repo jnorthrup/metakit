@@ -47,7 +47,7 @@ static PyObject *PyRowRef_getattr(PyRowRef *o, char *nm) {
         }
         return out;
       } else if (strcmp(nm, "__view__") == 0) {
-        return new PyView(o->Container());
+        return new PyView(o->Container(), o);
       } else if (strcmp(nm, "__index__") == 0) {
         return PyInt_FromLong((&(*o))._index);
       }
@@ -197,7 +197,7 @@ void PyRowRef::setFromPython(const c4_RowRef &row, const c4_Property &prop,
       }
        else {
         //((const c4_ViewProp&) prop) (row) = c4_View ();
-        PyView tmp(((const c4_ViewProp &)prop)(row));
+        PyView tmp(((const c4_ViewProp &)prop)(row), 0);
         PWOSequence lst(attr);
         tmp.SetSize(lst.len());
         for (int i = 0; i < lst.len(); i++) {
@@ -288,7 +288,7 @@ PyObject *PyRowRef::asPython(const c4_Property &prop) {
       }
     case 'V':
        {
-        return new PyView(((const c4_ViewProp &)prop)(*this));
+        return new PyView(((const c4_ViewProp &)prop)(*this), this);
       }
     case 'B':
     case 'M':
