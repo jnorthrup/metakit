@@ -36,12 +36,13 @@ extern PyTypeObject PyROViewertype;
 #define IMMUTABLEROWS 2
 
 class PyView: public PyHead, public c4_View {
-    PyView *_base;
+	PyView *_base;
+    PyObject *_owner;
     int _state;
   public:
     PyView();
-    PyView(const c4_View &o, PyView *owner = 0, int state = BASE);
-    ~PyView(){}
+    PyView(const c4_View &o, PyObject *owner, PyView *base = 0, int state = BASE);
+    ~PyView();
     void insertAt(int i, PyObject *o);
     PyRowRef *getItem(int i);
     PyView *getSlice(int s, int e);
