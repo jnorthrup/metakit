@@ -1479,16 +1479,6 @@ else
 echo "${ECHO_T}no, static" >&6
 fi
 
-if test $SHARED_BUILD = 1; then
-  SHLIB_FLAGS="-shared"
-  SHLIB_CFLAGS="-fPIC -DUSE_TCL_STUBS"
-  SHLIB_LD="g++ -shared"
-else
-  SHLIB_FLAGS=""
-  SHLIB_CFLAGS=""
-  SHLIB_LD=""
-fi
-
 # Checks for programs.
 ac_ext=cc
 ac_cpp='$CXXCPP $CPPFLAGS'
@@ -1581,6 +1571,17 @@ test -n "$ac_ct_CXX" || ac_ct_CXX="g++"
 
   CXX=$ac_ct_CXX
 fi
+
+if test $SHARED_BUILD = 1; then
+  SHLIB_FLAGS="-shared"
+  SHLIB_CFLAGS="-fPIC -DUSE_TCL_STUBS"
+  SHLIB_LD="$CXX -shared"
+else
+  SHLIB_FLAGS=""
+  SHLIB_CFLAGS=""
+  SHLIB_LD=""
+fi
+
 
 
 # Provide some information about the compiler.
@@ -3391,7 +3392,7 @@ build_cpu=`uname -p`
 case $build_os in
   Darwin*)
     SHLIB_SUFFIX=".dylib"
-    SHLIB_LD="g++ -dynamiclib -flat_namespace -undefined suppress"
+    SHLIB_LD="$CXX -dynamiclib -flat_namespace -undefined suppress"
     STRIP_FLAGS=-S
     ;;
   HP-UX*)
