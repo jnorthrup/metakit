@@ -14,3 +14,4 @@ add_executable(myio myio.cpp)
 target_link_libraries(myio mk4_static)
 install(TARGETS myio
 	RUNTIME DESTINATION demos)
+
