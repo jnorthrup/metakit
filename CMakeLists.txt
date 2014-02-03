@@ -30,10 +30,21 @@ check_type_size("long long" LONG_LONG)
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/config.h.cmake ${CMAKE_CURRENT_BINARY_DIR}/config.h)
 include_directories(${CMAKE_CURRENT_BINARY_DIR})
 
-option(USE_SYSTEM_STL "Build with system STL (duh?)" OFF)
+option (USE_SYSTEM_STL "Build with system STL (duh?)" OFF)
+option (METAKIT_TCL    "Build Tcl bindings" ON)
+option (METAKIT_PYTHON "Build Python bindings" ON)
+
 add_subdirectory(src)
+add_subdirectory(demos)
 
 if (BUILD_TESTING)
-    add_subdirectory(demos)
     add_subdirectory(tests)
 endif (BUILD_TESTING)
+
+if (METAKIT_TCL)
+    add_subdirectory(tcl)
+endif()
+if (METAKIT_PYTHON)
+    add_subdirectory(python)
+endif()
+

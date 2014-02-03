@@ -164,11 +164,11 @@ static PyObject *PyView_select(PyView *o, PyObject *_args, PyObject *kwargs) {
     PWOSequence args(_args);
     if (args.len() == 0) {
       o->makeRow(temp, kwargs, false);
-      return new PyView(o->Select(temp), o, o->computeState(NOTIFIABLE));
+      return new PyView(o->Select(temp), o, o, o->computeState(NOTIFIABLE));
     }
     if (args.len() == 1) {
       o->makeRow(temp, args[0], false);
-      return new PyView(o->Select(temp), o, o->computeState(NOTIFIABLE));
+      return new PyView(o->Select(temp), o, o, o->computeState(NOTIFIABLE));
     }
 
     if (PyObject_Length(args[0]) > 0)
@@ -178,7 +178,7 @@ static PyObject *PyView_select(PyView *o, PyObject *_args, PyObject *kwargs) {
     if (temp.Container().NumProperties() == 0 || PyObject_Length(args[1]) > 0)
       o->makeRow(temp2, args[1], false);
 
-    return new PyView(o->SelectRange(temp, temp2), o, o->computeState
+    return new PyView(o->SelectRange(temp, temp2), o, o, o->computeState
       (NOTIFIABLE));
   } catch (...) {
     return 0;
@@ -195,9 +195,9 @@ static PyObject *PyView_sort(PyView *o, PyObject *_args) {
     if (args.len()) {
       PyView crit;
       crit.addProperties(args);
-      return new PyView(o->SortOn(crit), o, o->computeState(FINALNOTIFIABLE));
+      return new PyView(o->SortOn(crit), o, o, o->computeState(FINALNOTIFIABLE));
     }
-    return new PyView(o->Sort(), o, o->computeState(FINALNOTIFIABLE));
+    return new PyView(o->Sort(), o, o, o->computeState(FINALNOTIFIABLE));
   } catch (...) {
     return 0;
   }
@@ -218,7 +218,7 @@ static PyObject *PyView_sortrev(PyView *o, PyObject *_args) {
     PyView propsDown;
     propsDown.addProperties(down);
 
-    return new PyView(o->SortOnReverse(propsAll, propsDown), 0, o->computeState
+    return new PyView(o->SortOnReverse(propsAll, propsDown), o, 0, o->computeState
       (FINALNOTIFIABLE));
   } catch (...) {
     return 0;
@@ -233,7 +233,7 @@ static PyObject *PyView_project(PyView *o, PyObject *_args) {
     PWOSequence args(_args);
     PyView crit;
     crit.addProperties(args);
-    return new PyView(o->Project(crit), 0, o->computeState(NOTIFIABLE));
+    return new PyView(o->Project(crit), o, 0, o->computeState(NOTIFIABLE));
   } catch (...) {
     return 0;
   }
@@ -263,7 +263,7 @@ static PyObject *PyView_flatten(PyView *o, PyObject *_args, PyObject *_kwargs) {
       if (int(PWONumber(kwargs["outer"])))
         outer = true;
     }
-    return new PyView(o->JoinProp((const c4_ViewProp &)subview, outer), 0, o
+    return new PyView(o->JoinProp((const c4_ViewProp &)subview, outer), o, 0, o
       ->computeState(ROVIEWER));
   } catch (...) {
     return 0;
@@ -294,7 +294,7 @@ static PyObject *PyView_join(PyView *o, PyObject *_args, PyObject *_kwargs) {
     }
     PyView crit;
     crit.addProperties(args.getSlice(1, last));
-    return new PyView(o->Join(crit,  *other, outer), 0, o->computeState
+    return new PyView(o->Join(crit,  *other, outer), o, 0, o->computeState
       (ROVIEWER));
   } catch (...) {
     return 0;
@@ -312,7 +312,7 @@ static PyObject *PyView_groupby(PyView *o, PyObject *_args) {
     PyView crit;
     crit.addProperties(args.getSlice(0, last));
     c4_ViewProp sub(subname);
-    return new PyView(o->GroupBy(crit, sub), 0, o->computeState(ROVIEWER));
+    return new PyView(o->GroupBy(crit, sub), o, 0, o->computeState(ROVIEWER));
   } catch (...) {
     return 0;
   }
@@ -329,7 +329,7 @@ static PyObject *PyView_counts(PyView *o, PyObject *_args) {
     PyView crit;
     crit.addProperties(args.getSlice(0, last));
     c4_IntProp count(name);
-    return new PyView(o->Counts(crit, count), 0, o->computeState(ROVIEWER));
+    return new PyView(o->Counts(crit, count), o, 0, o->computeState(ROVIEWER));
   } catch (...) {
     return 0;
   }
@@ -351,7 +351,7 @@ static PyObject *PyView_rename(PyView *o, PyObject *_args) {
     PWOString newName(args[1]);
     c4_Property nProp(oProp.Type(), newName);
 
-    return new PyView(o->Rename(oProp, nProp), 0, o->computeState(RWVIEWER));
+    return new PyView(o->Rename(oProp, nProp), o, 0, o->computeState(RWVIEWER));
   } catch (...) {
     return 0;
   }
@@ -362,7 +362,7 @@ static char *unique__doc =
 
 static PyObject *PyView_unique(PyView *o, PyObject *_args) {
   try {
-    return new PyView(o->Unique(), 0, o->computeState(ROVIEWER));
+    return new PyView(o->Unique(), o, 0, o->computeState(ROVIEWER));
   } catch (...) {
     return 0;
   }
@@ -375,7 +375,7 @@ static PyObject *PyView_product(PyView *o, PyObject *_args) {
   try {
     PWOSequence args(_args);
     MustBeView(args[0]);
-    return new PyView(o->Product(*(PyView*)(PyObject*)args[0]), 0, o
+    return new PyView(o->Product(*(PyView*)(PyObject*)args[0]), o, 0, o
       ->computeState(ROVIEWER));
   } catch (...) {
     return 0;
@@ -388,7 +388,7 @@ static PyObject *PyView_union(PyView *o, PyObject *_args) {
   try {
     PWOSequence args(_args);
     MustBeView(args[0]);
-    return new PyView(o->Union(*(PyView*)(PyObject*)args[0]), 0, o
+    return new PyView(o->Union(*(PyView*)(PyObject*)args[0]), o, 0, o
       ->computeState(ROVIEWER));
   } catch (...) {
     return 0;
@@ -402,7 +402,7 @@ static PyObject *PyView_intersect(PyView *o, PyObject *_args) {
   try {
     PWOSequence args(_args);
     MustBeView(args[0]);
-    return new PyView(o->Intersect(*(PyView*)(PyObject*)args[0]), 0, o
+    return new PyView(o->Intersect(*(PyView*)(PyObject*)args[0]), o, 0, o
       ->computeState(ROVIEWER));
   } catch (...) {
     return 0;
@@ -416,7 +416,7 @@ static PyObject *PyView_different(PyView *o, PyObject *_args) {
   try {
     PWOSequence args(_args);
     MustBeView(args[0]);
-    return new PyView(o->Different(*(PyView*)(PyObject*)args[0]), 0, o
+    return new PyView(o->Different(*(PyView*)(PyObject*)args[0]), o, 0, o
       ->computeState(ROVIEWER));
   } catch (...) {
     return 0;
@@ -429,7 +429,7 @@ static PyObject *PyView_minus(PyView *o, PyObject *_args) {
   try {
     PWOSequence args(_args);
     MustBeView(args[0]);
-    return new PyView(o->Minus(*(PyView*)(PyObject*)args[0]), 0, o
+    return new PyView(o->Minus(*(PyView*)(PyObject*)args[0]), o, 0, o
       ->computeState(ROVIEWER));
   } catch (...) {
     return 0;
@@ -443,7 +443,7 @@ static PyObject *PyView_remapwith(PyView *o, PyObject *_args) {
   try {
     PWOSequence args(_args);
     MustBeView(args[0]);
-    return new PyView(o->RemapWith(*(PyView*)(PyObject*)args[0]), 0, o
+    return new PyView(o->RemapWith(*(PyView*)(PyObject*)args[0]), o, 0, o
       ->computeState(RWVIEWER));
   } catch (...) {
     return 0;
@@ -457,7 +457,7 @@ static PyObject *PyView_pair(PyView *o, PyObject *_args) {
   try {
     PWOSequence args(_args);
     MustBeView(args[0]);
-    return new PyView(o->Pair(*(PyView*)(PyObject*)args[0]), 0, o->computeState
+    return new PyView(o->Pair(*(PyView*)(PyObject*)args[0]), o, 0, o->computeState
       (MVIEWER));
   } catch (...) {
     return 0;
@@ -479,7 +479,7 @@ static PyObject *PyView_hash(PyView *o, PyObject *_args) {
       map = *(PyView*)(PyObject*)args[0];
     }
     int numkeys = args.len() <= 1 ? 1 : (int)PWONumber(args[1]);
-    return new PyView(o->Hash(map, numkeys), 0, o->computeState(MVIEWER));
+    return new PyView(o->Hash(map, numkeys), o, 0, o->computeState(MVIEWER));
   } catch (...) {
     return 0;
   }
@@ -490,7 +490,7 @@ static char *blocked__doc =
 
 static PyObject *PyView_blocked(PyView *o, PyObject *_args) {
   try {
-    return new PyView(o->Blocked(), 0, o->computeState(MVIEWER));
+    return new PyView(o->Blocked(), o, 0, o->computeState(MVIEWER));
   } catch (...) {
     return 0;
   }
@@ -504,7 +504,7 @@ static PyObject *PyView_ordered(PyView *o, PyObject *_args) {
   try {
     PWOSequence args(_args);
     int numkeys = args.len() <= 0 ? 1 : (int)PWONumber(args[0]);
-    return new PyView(o->Ordered(numkeys), 0, o->computeState(MVIEWER));
+    return new PyView(o->Ordered(numkeys), o, 0, o->computeState(MVIEWER));
   } catch (...) {
     return 0;
   }
@@ -527,7 +527,7 @@ static PyObject *PyView_indexed(PyView *o, PyObject *_args) {
     }
     PyView crit;
     crit.addProperties(args.getSlice(1, last));
-    return new PyView(o->Indexed(crit,  *other, unique), 0, o->computeState
+    return new PyView(o->Indexed(crit,  *other, unique), o, 0, o->computeState
       (MVIEWER));
   } catch (...) {
     return 0;
@@ -836,7 +836,7 @@ static char *copy__doc = "copy() -- returns a copy of the view\n";
 
 static PyObject *PyView_copy(PyView *o, PyObject *_args) {
   try {
-    return new PyView(o->Duplicate());
+    return new PyView(o->Duplicate(), o);
   } catch (...) {
     return 0;
   }
@@ -1112,7 +1112,7 @@ static PyObject *PyView_concat(PyObject *_o, PyObject *_other) {
   try {
     if (!PyGenericView_Check(other))
       Fail(PyExc_TypeError, "Not a PyView(er)");
-    return new PyView(o->Concat(*other), 0, o->computeState(RWVIEWER));
+    return new PyView(o->Concat(*other), o, 0, o->computeState(RWVIEWER));
   } catch (...) {
     return 0;
   }
@@ -1122,10 +1122,10 @@ static PyObject *PyView_repeat(PyObject *_o, Py_ssize_t n) {
   PyView *o = (PyView*)_o;
 
   try {
-    PyView *tmp = new PyView(*o, 0, o->computeState(RWVIEWER));
+    PyView *tmp = new PyView(*o, o, 0, o->computeState(RWVIEWER));
     while (--n > 0) {
       //!! a huge stack of views?
-      PyView *tmp1 = new PyView(tmp->Concat(*o), 0, o->computeState(RWVIEWER));
+      PyView *tmp1 = new PyView(tmp->Concat(*o), o, 0, o->computeState(RWVIEWER));
       delete tmp;
       tmp = tmp1;
     }
@@ -1335,13 +1335,19 @@ PyObject *PyView_new(PyObject *o, PyObject *_args) {
   return new PyView;
 }
 
-PyView::PyView(): PyHead(PyViewtype), _base(0), _state(BASE){}
+PyView::PyView(): PyHead(PyViewtype), _owner(0), _state(BASE) {}
 
-PyView::PyView(const c4_View &o, PyView *owner, int state): PyHead(PyViewtype),
-  c4_View(o), _base(owner), _state(state) {
+PyView::PyView(const c4_View &o, PyObject *owner, PyView* base, int state): PyHead(PyViewtype),
+  c4_View(o), _owner(owner), _base(base), _state(state) {
   ob_type = getTypeObject(_state);
-  if (owner && owner->_base)
-    _base = owner->_base;
+  if (base && base->_base)
+    _base = base->_base;
+
+  Py_XINCREF(_owner);
+}
+
+PyView::~PyView() {
+  Py_XDECREF(this->_owner);
 }
 
 /* For dicts, use the Python names so MK's case insensitivity works */
@@ -1473,8 +1479,8 @@ PyView *PyView::getSlice(int s, int e) {
     e = sz;
   if (s >= 0 && s < sz)
     if (e > s && e <= sz)
-      return new PyView(Slice(s, e), 0, computeState(RWVIEWER));
-  return new PyView(Clone());
+      return new PyView(Slice(s, e), this, 0, computeState(RWVIEWER));
+  return new PyView(Clone(), this);
 }
 
 int PyView::setSlice(int s, int e, const PWOSequence &lst) {
@@ -1567,7 +1573,7 @@ PyView *PyView::indices(const PyView &subset) {
     _index(row) = GetIndexOf(subset.GetAt(i));
     tmp.SetAt(i, row);
   }
-  return new PyView(tmp);
+  return new PyView(tmp, this);
 }
 
 void PyView::remove(const PyView &indices) {
@@ -1591,7 +1597,7 @@ PyView *PyView::filter(const PWOCallable &func) {
     }
     Py_DECREF(row);
   }
-  return new PyView(indices);
+  return new PyView(indices, this);
 }
 
 PyObject *PyView::reduce(const PWOCallable &func, PWONumber &start) {

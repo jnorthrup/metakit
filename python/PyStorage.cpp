@@ -144,7 +144,7 @@ static char *contents__doc =
 
 static PyObject *PyStorage_Contents(PyStorage *o, PyObject *_args) {
   try {
-    return new PyView(*o);
+    return new PyView(*o, o);
   } catch (...) {
     return 0;
   }
@@ -230,7 +230,7 @@ static PyObject *PyStorage_View(PyStorage *o, PyObject *_args) {
   try {
     PWOSequence args(_args);
     PWOString nm(args[0]);
-    return new PyView(o->View(nm));
+    return new PyView(o->View(nm), o);
   } catch (...) {
     return 0;
   }
@@ -243,7 +243,7 @@ static PyObject *PyStorage_GetAs(PyStorage *o, PyObject *_args) {
   try {
     PWOSequence args(_args);
     PWOString descr(args[0]);
-    return new PyView(o->GetAs(descr));
+    return new PyView(o->GetAs(descr), o);
   } catch (...) {
     return 0;
   }
@@ -330,11 +330,6 @@ static void PyStorage_dealloc(PyStorage *o) {
   delete o;
 }
 
-static int PyStorage_print(PyStorage *o, FILE *f, int) {
-  fprintf(f, "<PyStorage object at %lx>", (long)o);
-  return 0;
-}
-
 static PyObject *PyStorage_getattr(PyStorage *o, char *nm) {
   return Py_FindMethod(StorageMethods, o, nm);
 }
@@ -342,7 +337,7 @@ static PyObject *PyStorage_getattr(PyStorage *o, char *nm) {
 PyTypeObject PyStoragetype =  {
   PyObject_HEAD_INIT(&PyType_Type)0, "PyStorage", sizeof(PyStorage), 0, 
     (destructor)PyStorage_dealloc,  /*tp_dealloc*/
-  (printfunc)PyStorage_print,  /*tp_print*/
+  0, /*(printfunc)PyStorage_print,  /*tp_print*/
   (getattrfunc)PyStorage_getattr,  /*tp_getattr*/
   0,  /*tp_setattr*/
   (cmpfunc)0,  /*tp_compare*/
@@ -511,7 +506,7 @@ static PyObject *PyView_wrap(PyObject *o, PyObject *_args) {
     }
 
     c4_View cv = new PyViewer(seq, templ, (int)usetuples != 0);
-    return new PyView(cv, 0, ROVIEWER);
+    return new PyView(cv, 0 /* I'm unsure about passing 0 here. FIXME? */, 0, ROVIEWER);
   } catch (...) {
     return 0;
   }
