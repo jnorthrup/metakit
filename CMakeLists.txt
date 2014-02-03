@@ -32,8 +32,8 @@ include_directories(${CMAKE_CURRENT_BINARY_DIR})
 
 option(USE_SYSTEM_STL "Build with system STL (duh?)" OFF)
 add_subdirectory(src)
+add_subdirectory(demos)
 
 if (BUILD_TESTING)
-    add_subdirectory(demos)
     add_subdirectory(tests)
 endif (BUILD_TESTING)
