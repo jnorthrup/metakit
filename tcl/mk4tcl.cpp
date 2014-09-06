@@ -1964,7 +1964,11 @@ int MkTcl::FileCmd() {
         // now return the values as a list
         Tcl_Obj *r = tcl_GetObjResult();
         for (int i = 1; i < a->GetSize() - 1 && !_error; ++i)
-          tcl_ListObjAppendElement(r, Tcl_NewLongObj((long)a->GetAt(i)));
+#ifdef TCL_WIDE_INT_TYPE
+		  tcl_ListObjAppendElement(r, Tcl_NewLongObj((Tcl_WideInt)a->GetAt(i)));
+#else
+		  tcl_ListObjAppendElement(r, Tcl_NewLongObj((long)a->GetAt(i)));
+#endif
         return _error;
       }
   }
