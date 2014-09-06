@@ -117,7 +117,7 @@ fi
 if test $SHARED_BUILD = 1; then
   SHLIB_FLAGS="-shared"
   SHLIB_CFLAGS="-fPIC -DUSE_TCL_STUBS"
-  SHLIB_LD="g++ -shared"
+  SHLIB_LD="${CXX} -shared"
 else
   SHLIB_FLAGS=""
   SHLIB_CFLAGS=""
@@ -153,7 +153,7 @@ build_cpu=`uname -p`
 case $build_os in
   Darwin*)
     SHLIB_SUFFIX=".dylib"
-    SHLIB_LD="g++ -dynamiclib -flat_namespace -undefined suppress"
+    SHLIB_LD="${CXX} -dynamiclib -flat_namespace -undefined suppress"
     STRIP_FLAGS=-S
     ;;
   HP-UX*)
