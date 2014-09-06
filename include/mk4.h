@@ -9,6 +9,8 @@
 #ifndef __MK4_H__
 #define __MK4_H__
 
+#include <stdint.h>
+
 //---------------------------------------------------------------------------
 //
 //  TITLE
@@ -199,11 +201,7 @@ defined(__x86_64__) || defined(__s390x__) || defined(__alpha) ||  \
 
 typedef unsigned char t4_byte; // create typedefs for t4_byte, etc.
 
-#if q4_LONG64
-typedef int t4_i32; // if longs are 64b, then int must be 32b
-#else 
-typedef long t4_i32; // if longs aren't 64b, then they are 32b
-#endif 
+typedef int32_t t4_i32;
 
 #if q4_LONG64           // choose a way to represent 64b integers
 typedef long t4_i64;
