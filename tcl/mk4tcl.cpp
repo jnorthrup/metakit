@@ -792,6 +792,10 @@ MkWorkspace::~MkWorkspace() {
   for (int i = _items.GetSize(); --i >= 0;)
     delete Nth(i);
 
+  for (MkChannel *chan = _chanList; chan; chan = chan->_next) {
+    Tcl_UnregisterChannel(_interp, chan->_chan);
+  }
+
   // need this to prevent recursion in Tcl_DeleteAssocData in 8.2 (not 8.0!)
   Tcl_DeleteEventSource(SetupProc, CheckProc, this);
   Tcl_SetAssocData(_interp, "mk4tcl", 0, 0);
