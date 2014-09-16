@@ -1847,6 +1847,11 @@ int MkTcl::FileCmd() {
 
     case 2:
        { // close
+        for (MkChannel *chan = work._chanList; chan; chan = chan->_next) {
+          if (chan->_storage == np->_storage ) {
+            Tcl_UnregisterChannel(interp, chan->_chan);
+          }
+        }
         delete np;
       }
       break;
