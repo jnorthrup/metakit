@@ -184,7 +184,7 @@ const c4_Property &AsProperty(Tcl_Obj *objPtr, const c4_View &view_);
 //  Cursors in Tcl are implemented as a pointer to an MkPath plus an index.
 
 MkPath &AsPath(Tcl_Obj *obj_);
-int &AsIndex(Tcl_Obj *obj_);
+long &AsIndex(Tcl_Obj *obj_);
 int SetCursorFromAny(Tcl_Interp *interp, Tcl_Obj *objPtr);
 
 // 24nov02: added to support releasing mutex lock during loop eval's
@@ -277,7 +277,7 @@ class MkTcl: public Tcl {
     ~MkTcl();
 
     c4_View asView(Tcl_Obj *obj_);
-    int &changeIndex(Tcl_Obj *obj_);
+    long &changeIndex(Tcl_Obj *obj_);
     c4_RowRef asRowRef(Tcl_Obj *obj_, int type_ = kExistingRow);
     int GetCmd();
     int SetValues(const c4_RowRef &row_, int objc, Tcl_Obj *const * objv);

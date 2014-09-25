@@ -78,7 +78,7 @@ test basic-7 {open same file again} -constraints {unix} -setup {
   mk::file close db1
   file delete -force $f
   unset f
-} -returnCodes {ok error}
+} -returnCodes {ok return error}
 
 test basic-8 {simple select} -body {
   mk::view layout db.a s

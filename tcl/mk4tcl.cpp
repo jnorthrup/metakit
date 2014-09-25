@@ -792,6 +792,10 @@ MkWorkspace::~MkWorkspace() {
   for (int i = _items.GetSize(); --i >= 0;)
     delete Nth(i);
 
+  for (MkChannel *chan = _chanList; chan; chan = chan->_next) {
+    Tcl_UnregisterChannel(_interp, chan->_chan);
+  }
+
   // need this to prevent recursion in Tcl_DeleteAssocData in 8.2 (not 8.0!)
   Tcl_DeleteEventSource(SetupProc, CheckProc, this);
   Tcl_SetAssocData(_interp, "mk4tcl", 0, 0);
@@ -1096,11 +1100,11 @@ MkPath &AsPath(Tcl_Obj *obj_) {
   return *(MkPath*)obj_->internalRep.twoPtrValue.ptr2;
 }
 
-int &AsIndex(Tcl_Obj *obj_) {
+long &AsIndex(Tcl_Obj *obj_) {
   d4_assert(obj_->typePtr ==  &mkCursorType);
   d4_assert(obj_->internalRep.twoPtrValue.ptr2 != 0);
 
-  return (int &)obj_->internalRep.twoPtrValue.ptr1;
+  return (long &)obj_->internalRep.twoPtrValue.ptr1;
 }
 
 static void FreeCursorInternalRep(Tcl_Obj *cursorPtr) {
@@ -1163,7 +1167,7 @@ static void UpdateStringOfCursor(Tcl_Obj *cursorPtr) {
   EnterMutex(path._ws->_interp);
   c4_String s = path._path;
 
-  int index = AsIndex(cursorPtr);
+  long index = AsIndex(cursorPtr);
   if (index >= 0) {
     char buf[20];
     sprintf(buf, "%s%d", s.IsEmpty() ? "" : "!", index);
@@ -1508,7 +1512,7 @@ c4_View MkTcl::asView(Tcl_Obj *obj_) {
   return AsPath(obj_)._view;
 }
 
-int &MkTcl::changeIndex(Tcl_Obj *obj_) {
+long &MkTcl::changeIndex(Tcl_Obj *obj_) {
   SetCursorFromAny(interp, obj_);
   Tcl_InvalidateStringRep(obj_);
   return AsIndex(obj_);
@@ -1516,7 +1520,7 @@ int &MkTcl::changeIndex(Tcl_Obj *obj_) {
 
 c4_RowRef MkTcl::asRowRef(Tcl_Obj *obj_, int type_) {
   c4_View view = asView(obj_);
-  int index = AsIndex(obj_);
+  long index = AsIndex(obj_);
   int size = view.GetSize();
 
   switch (type_) {
@@ -1674,7 +1678,7 @@ int MkTcl::RowCmd() {
           return _error;
 
         c4_View view = row.Container();
-        int index = AsIndex(objv[2]);
+        long index = AsIndex(objv[2]);
 
         int count = objc > 3 ? tcl_GetIntFromObj(objv[3]): 1;
         if (count > view.GetSize() - index)
@@ -1694,7 +1698,7 @@ int MkTcl::RowCmd() {
           return _error;
 
         c4_View view = toRow.Container();
-        int n = AsIndex(objv[2]);
+        long n = AsIndex(objv[2]);
 
         int count = objc > 3 ? tcl_GetIntFromObj(objv[3]): 1;
         if (count >= 1) {
@@ -1843,6 +1847,11 @@ int MkTcl::FileCmd() {
 
     case 2:
        { // close
+        for (MkChannel *chan = work._chanList; chan; chan = chan->_next) {
+          if (chan->_storage == np->_storage ) {
+            Tcl_UnregisterChannel(interp, chan->_chan);
+          }
+        }
         delete np;
       }
       break;
@@ -1964,7 +1973,11 @@ int MkTcl::FileCmd() {
         // now return the values as a list
         Tcl_Obj *r = tcl_GetObjResult();
         for (int i = 1; i < a->GetSize() - 1 && !_error; ++i)
-          tcl_ListObjAppendElement(r, Tcl_NewLongObj((long)a->GetAt(i)));
+#ifdef TCL_WIDE_INT_TYPE
+		  tcl_ListObjAppendElement(r, Tcl_NewLongObj((Tcl_WideInt)a->GetAt(i)));
+#else
+		  tcl_ListObjAppendElement(r, Tcl_NewLongObj((long)a->GetAt(i)));
+#endif
         return _error;
       }
   }
@@ -2259,7 +2272,7 @@ int MkTcl::CursorCmd() {
   if (objc <= 3) {
     if (id == 1)
      { // position without value returns current value
-      Tcl_SetIntObj(tcl_GetObjResult(), AsIndex(var));
+      Tcl_SetLongObj(tcl_GetObjResult(), AsIndex(var));
       return _error;
     }
 
@@ -2391,7 +2404,7 @@ int MkTcl::SelectCmd() {
 int MkTcl::ChannelCmd() {
   c4_RowRef row = asRowRef(objv[1]);
   MkPath &path = AsPath(objv[1]);
-  int index = AsIndex(objv[1]);
+  long index = AsIndex(objv[1]);
 
   if (_error)
     return _error;

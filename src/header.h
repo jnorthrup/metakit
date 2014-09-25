@@ -13,7 +13,6 @@
 
 #include "config.h"
 #include <stdint.h>
- 
 /////////////////////////////////////////////////////////////////////////////
 // A number of preprocessor options are used in the source code
 //
