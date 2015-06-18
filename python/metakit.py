@@ -13,10 +13,10 @@ both metakit.py and Mk4py.{dll,so} can be found by Python.
 
 _oldname = __name__
 __name__ = "metakit"
-__version__ = "2.4.9.7"
+__version__ = "2.4.9.8"
 __description__ = "Python bindings to the Metakit database library"
 __author__ = "Gordon McMillan / Jean-Claude Wippler"
-__email__ = "jcw@equi4.com"
+__email__ = "jc@wippler.nl"
 __url__ = "http://www.equi4.com/metakit/python.html"
 __license__ = "X/MIT style, see: http://www.equi4.com/mklicense.html"
 from Mk4py import *

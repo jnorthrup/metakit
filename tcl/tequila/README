@@ -106,4 +106,4 @@ Note: the "mk::loop" command is not implemented in this release, since
 it needs to be processed in the client.  Use mk::select instead.
 
 
--- Jean-Claude Wippler <jcw@equi4.com>
+-- Jean-Claude Wippler <jc@wippler.nl>
