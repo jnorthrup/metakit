@@ -38,6 +38,7 @@ tcllibdir = @TCL_LIB_DIR@
 
 CXX_FLAGS = @CPPFLAGS@ @CXXFLAGS@ @MK_THREADS@ @SHLIB_CFLAGS@ \
 		-I$(srcdir)/../include
+LD_FLAGS = @LDFLAGS@
 
 # Compiling without frame pointers can play tricks with exception handling
 # (e.g. in Mk4py).  This does not affect standard operation, *only* errors.
@@ -46,6 +47,7 @@ CXX_FLAGS = @CPPFLAGS@ @CXXFLAGS@ @MK_THREADS@ @SHLIB_CFLAGS@ \
 CXXFLAGS = $(CXX_FLAGS)
 #CXXFLAGS = -Dq4_CHECK $(CXX_FLAGS)
 #CXXFLAGS = -Wall -pedantic -Wno-unused $(CXX_FLAGS)
+LDFLAGS = $(LD_FLAGS)
 
 CXX = @CXX@
 INSTALL = @INSTALL@
