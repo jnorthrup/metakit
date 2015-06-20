@@ -34,11 +34,11 @@ DOCUMENTATION - All documentation uses HTML.  The main page is "Metakit.html",
     The C++ API Reference is extracted from the source code using Doxygen.
 
 WEBSITE URLS - The main pages on the world wide web, for news and downloads:
-    Homepage:       http://www.equi4.com/metakit.html
-    Python news:    http://www.equi4.com/metakit/python.html
-    Tcl/Tk news:    http://www.equi4.com/metakit/tcl.html
-    License info:   http://www.equi4.com/metakit/license.html
-    Contact info:   http://www.equi4.com/about/contact.html
+    Homepage:       http://equi4.com/metakit/
+    Python news:    http://equi4.com/metakit/python.html
+    Tcl/Tk news:    http://equi4.com/metakit/tcl.html
+    License info:   http://equi4.com/metakit/license.html
+    Contact info:   http://equi4.com/about/contact.html
 
 ACKNOWLEDGEMENTS - Thanks to everyone who has helped shape and extend Metakit,
     including Kyrill Denisenko, Mark Roseman, Gordon McMillan, Matt Newman,
