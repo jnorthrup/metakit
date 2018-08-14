@@ -166,14 +166,14 @@ class test_regrtest(Command):
 #    metakit = sys.modules['metakit']
 
 setup(name             = "metakit",
-      version          = "2.4.9.7",
+      version          = "2.4.9.8",
       description      = "Python bindings to the Metakit database library",
       #long_description = metakit.__doc__,
       author           = "Gordon McMillan / Jean-Claude Wippler",
-      author_email     = "jcw@equi4.com",
+      author_email     = "jc@wippler.nl",
       url              = "http://www.equi4.com/metakit/python.html",
       maintainer       = "Jean-Claude Wippler",
-      maintainer_email = "jcw@equi4.com",
+      maintainer_email = "jc@wippler.nl",
       license         = "X/MIT style, see: http://www.equi4.com/mklicense.html",
       keywords         = ['database'],
       py_modules       = ['metakit'],

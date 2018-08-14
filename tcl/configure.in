@@ -1,4 +1,4 @@
-AC_INIT([Mk4tcl], [2.4.9.7])
+AC_INIT([Mk4tcl], [2.4.9.8])
 TEA_INIT([3.6])
 
 AC_CONFIG_AUX_DIR(tclconfig)
