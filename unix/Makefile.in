@@ -34,6 +34,7 @@ pylibdir = @PY_LIB_DIR@
 
 tclsh = tclsh
 tclincludedir = @TCL_INCLUDE_DIR@
+tclincludes = -I$(tclincludedir)/generic -I$(tclincludedir)
 tcllibdir = @TCL_LIB_DIR@
 
 CXX_FLAGS = @CPPFLAGS@ @CXXFLAGS@ @MK_THREADS@ @SHLIB_CFLAGS@ \
@@ -63,7 +64,7 @@ DESTDIR=
 #---------- Do not change, shorthand only
 
 CXX_SWITCHES      = $(CXXFLAGS) -I$(srcdir)/../src -I.
-CXX_SWITCHES_TCL  = $(CXXFLAGS) -I$(tclincludedir)/generic -I$(tclincludedir)
+CXX_SWITCHES_TCL  = $(CXXFLAGS) $(tclincludes)
 CXX_SWITCHES_PY   = $(CXXFLAGS) -I$(srcdir)/../python/scxx -I$(pyincludedir)
 
 #---------- The targets normally specified when calling "make"
