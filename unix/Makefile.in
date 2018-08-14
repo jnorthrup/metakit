@@ -34,10 +34,12 @@ pylibdir = @PY_LIB_DIR@
 
 tclsh = tclsh
 tclincludedir = @TCL_INCLUDE_DIR@
+tclincludes = -I$(tclincludedir)/generic -I$(tclincludedir)
 tcllibdir = @TCL_LIB_DIR@
 
 CXX_FLAGS = @CPPFLAGS@ @CXXFLAGS@ @MK_THREADS@ @SHLIB_CFLAGS@ \
 		-I$(srcdir)/../include
+LD_FLAGS = @LDFLAGS@
 
 # Compiling without frame pointers can play tricks with exception handling
 # (e.g. in Mk4py).  This does not affect standard operation, *only* errors.
@@ -46,6 +48,7 @@ CXX_FLAGS = @CPPFLAGS@ @CXXFLAGS@ @MK_THREADS@ @SHLIB_CFLAGS@ \
 CXXFLAGS = $(CXX_FLAGS)
 #CXXFLAGS = -Dq4_CHECK $(CXX_FLAGS)
 #CXXFLAGS = -Wall -pedantic -Wno-unused $(CXX_FLAGS)
+LDFLAGS = $(LD_FLAGS)
 
 CXX = @CXX@
 INSTALL = @INSTALL@
@@ -63,7 +66,7 @@ DESTDIR=
 #---------- Do not change, shorthand only
 
 CXX_SWITCHES      = $(CXXFLAGS) -I$(srcdir)/../src -I.
-CXX_SWITCHES_TCL  = $(CXXFLAGS) -I$(tclincludedir)/generic -I$(tclincludedir)
+CXX_SWITCHES_TCL  = $(CXXFLAGS) $(tclincludes)
 CXX_SWITCHES_PY   = $(CXXFLAGS) -I$(srcdir)/../python/scxx -I$(pyincludedir)
 
 #---------- The targets normally specified when calling "make"
@@ -98,13 +101,13 @@ install-mk: libmk4$(LIBEXT)
 			$(srcdir)/../include/mk4str.h \
 			$(srcdir)/../include/mk4str.inl $(DESTDIR)$(includedir)
 	$(INSTALL_PROGRAM) libmk4$(LIBEXT) $(DESTDIR)$(libdir)
-	if [ '${LIBEXT}' = '.a' ]; then ranlib $(DESTDIR)$(libdir)/libmk4.a; fi
+	if [ '${LIBEXT}' = '.a' ]; then $(RANLIB) $(DESTDIR)$(libdir)/libmk4.a; fi
 
 install-tcl: Mk4tcl$(LIBEXT)
 	mkdir -p $(DESTDIR)$(tcllibdir)/Mk4tcl
 	$(INSTALL_PROGRAM) Mk4tcl$(LIBEXT) $(DESTDIR)$(tcllibdir)/Mk4tcl
-	if [ '${LIBEXT}' = '.a' ]; then ranlib $(DESTDIR)$(tcllibdir)/Mk4tcl/Mk4tcl.a; fi
-	echo 'package ifneeded Mk4tcl 2.4.9.7 [list load [file join $$dir Mk4tcl$(LIBEXT)] Mk4tcl]' >$(DESTDIR)$(tcllibdir)/Mk4tcl/pkgIndex.tcl
+	if [ '${LIBEXT}' = '.a' ]; then $(RANLIB) $(DESTDIR)$(tcllibdir)/Mk4tcl/Mk4tcl.a; fi
+	echo 'package ifneeded Mk4tcl 2.4.9.8 [list load [file join $$dir Mk4tcl$(LIBEXT)] Mk4tcl]' >$(DESTDIR)$(tcllibdir)/Mk4tcl/pkgIndex.tcl
 
 install-python: Mk4py$(LIBEXT)
 	mkdir -p $(DESTDIR)$(pylibdir)
@@ -131,23 +134,23 @@ $(srcdir)/configure: $(srcdir)/configure.in
 	cd $(srcdir) && autoconf
 
 libmk4$(LIB_SUFFIX): $(LOBJS)
-	ar rcu $@ $(LOBJS)
-	ranlib $@
+	$(AR) rcu $@ $(LOBJS)
+	$(RANLIB) $@
 
 libmk4$(SHLIB_SUFFIX): $(LOBJS) $(LINK_SPECIAL_FILES)
 	$(SHLIB_LD) -o $@ $(LOBJS) $(LINK_SPECIAL_FLAGS) $(LDFLAGS)
 
 Mk4tcl$(LIB_SUFFIX): mk4tcl.o mk4too.o $(LOBJS)
-	ar rcu $@ mk4tcl.o mk4too.o $(LOBJS)
-	ranlib $@
+	$(AR) rcu $@ mk4tcl.o mk4too.o $(LOBJS)
+	$(RANLIB) $@
 
 Mk4tcl$(SHLIB_SUFFIX): mk4tcl.o mk4too.o $(LOBJS) $(LINK_SPECIAL_FILES)
 	$(SHLIB_LD) -o $@ mk4tcl.o mk4too.o \
 			$(LOBJS) $(LINK_SPECIAL_FLAGS) $(LDFLAGS)
 
 Mk4py$(LIB_SUFFIX): $(PYOBJS) $(LOBJS)
-	ar cru $@ $(PYOBJS) $(LOBJS)
-	ranlib $@
+	$(AR) cru $@ $(PYOBJS) $(LOBJS)
+	$(RANLIB) $@
 
 Mk4py$(SHLIB_SUFFIX): $(PYOBJS) $(LOBJS) $(LINK_SPECIAL_FILES)
 	$(SHLIB_LD) -o $@ $(PYOBJS) $(LOBJS) $(LINK_SPECIAL_FLAGS) $(LDFLAGS)

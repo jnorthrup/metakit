@@ -104,6 +104,11 @@ else
   AC_MSG_RESULT([no (default)])
 fi
 
+# Checks for programs.
+AC_PROG_CXX
+AC_PROG_INSTALL
+
+# Check for shared building
 AC_MSG_CHECKING([for building as shared lib])
 AC_ARG_ENABLE(shared, [  --enable-shared         build as shared lib (default=yes)], [ok=$enableval], [ok=yes])
 if test "$ok" = yes; then
@@ -117,16 +122,13 @@ fi
 if test $SHARED_BUILD = 1; then
   SHLIB_FLAGS="-shared"
   SHLIB_CFLAGS="-fPIC -DUSE_TCL_STUBS"
-  SHLIB_LD="g++ -shared"
+  SHLIB_LD="$CXX -shared"
 else
   SHLIB_FLAGS=""
   SHLIB_CFLAGS=""
   SHLIB_LD=""
 fi
 
-# Checks for programs.
-AC_PROG_CXX
-AC_PROG_INSTALL
 
 # Checks for libraries.
 
@@ -153,7 +155,7 @@ build_cpu=`uname -p`
 case $build_os in
   Darwin*)
     SHLIB_SUFFIX=".dylib"
-    SHLIB_LD="g++ -dynamiclib -flat_namespace -undefined suppress"
+    SHLIB_LD="${CXX} -dynamiclib -undefined dynamic_lookup"
     STRIP_FLAGS=-S
     ;;
   HP-UX*)
