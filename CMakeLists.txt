@@ -1,4 +1,4 @@
-set (PACKAGE mk4tcl)
+set (PACKAGE Mk4tcl)
 project (${PACKAGE})
 cmake_minimum_required (VERSION 3.10)
 
